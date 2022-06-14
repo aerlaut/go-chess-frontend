@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { STARTING_POSITIONS } from '../constants';
 
@@ -20,11 +20,15 @@ function resetBoard() {
 function getCellColor(index) { return index % 2 === 0 ? 'white' : '#ccc'; }
 
 function Board(props) {
-  const { onPieceRemoved } = props;
+  const { gameNo, onPieceRemoved } = props;
 
-  const [cells] = useState(resetBoard());
+  const [cells, setCells] = useState(resetBoard());
   const [pickedAPiece, setPickedAPiece] = useState(false);
   const [selectedCell, setSelectedCell] = useState(null);
+
+  useEffect(() => {
+    setCells(resetBoard());
+  }, [gameNo]);
 
   function selectPiece(index) {
     setSelectedCell(index);
@@ -89,6 +93,7 @@ function Board(props) {
 }
 
 Board.propTypes = {
+  gameNo: PropTypes.number.isRequired,
   onPieceRemoved: PropTypes.func.isRequired,
 };
 
