@@ -27,4 +27,5 @@ h1 {
   display: inline-block;
   font-size: 60px;
   text-align: center;
+  cursor: pointer;
 }

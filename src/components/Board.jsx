@@ -20,6 +20,7 @@ function getCellColor(index) { return index % 2 === 0 ? 'white' : '#ccc'; }
 
 function Board() {
   const [cells] = useState(resetBoard());
+  const [selectedCell, setSelectedCell] = useState(null);
 
   return (
     <div id="board">
@@ -31,9 +32,16 @@ function Board() {
 
             return (
               <Cell
-                key={`cell-${rowIndex}-${colIndex}`}
-                color={cellColor}
+                key={cellIdx}
+                color={cellIdx === selectedCell ? 'red' : cellColor}
                 piece={cells[cellIdx]}
+                onClick={() => {
+                  if (cellIdx !== selectedCell && cells[cellIdx]) {
+                    setSelectedCell(cellIdx);
+                  } else {
+                    setSelectedCell(null);
+                  }
+                }}
               />
             );
           })
