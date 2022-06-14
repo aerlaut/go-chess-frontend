@@ -14,6 +14,11 @@ h1 {
   padding: 1em;
 }
 
+#play-area {
+  display: flex;
+  flex-direction: row;
+}
+
 #board {
   display: flex;
   flex-wrap: wrap;
@@ -28,4 +33,13 @@ h1 {
   font-size: 60px;
   text-align: center;
   cursor: pointer;
+}
+
+.removed-pieces {
+  margin: 0 10px;
+  min-width: 160px;
+  max-height: 640px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
 }

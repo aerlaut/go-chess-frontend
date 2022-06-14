@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { STARTING_POSITIONS } from '../constants';
 
 import Cell from './Cell';
@@ -18,9 +19,34 @@ function resetBoard() {
 
 function getCellColor(index) { return index % 2 === 0 ? 'white' : '#ccc'; }
 
-function Board() {
+function Board(props) {
+  const { onPieceRemoved } = props;
+
   const [cells] = useState(resetBoard());
+  const [pickedAPiece, setPickedAPiece] = useState(false);
   const [selectedCell, setSelectedCell] = useState(null);
+
+  function selectPiece(index) {
+    setSelectedCell(index);
+    setPickedAPiece(true);
+  }
+
+  function deselectPiece() {
+    setSelectedCell(null);
+    setPickedAPiece(false);
+  }
+
+  function movePiece(fromCellIdx, toCellIdx) {
+    // If there is a piece at the destination cell, remove it
+    if (cells[toCellIdx]) { onPieceRemoved(cells[toCellIdx]); }
+
+    // Move the piece to the destination cell
+    cells[toCellIdx] = cells[fromCellIdx];
+    cells[fromCellIdx] = null;
+
+    setSelectedCell(null);
+    setPickedAPiece(false);
+  }
 
   return (
     <div id="board">
@@ -36,10 +62,21 @@ function Board() {
                 color={cellIdx === selectedCell ? 'red' : cellColor}
                 piece={cells[cellIdx]}
                 onClick={() => {
-                  if (cellIdx !== selectedCell && cells[cellIdx]) {
-                    setSelectedCell(cellIdx);
-                  } else {
-                    setSelectedCell(null);
+                  // If the selected cell contains a piece, select it
+                  if (!pickedAPiece && cells[cellIdx]) {
+                    selectPiece(cellIdx);
+                    return;
+                  }
+
+                  // If the same cells are chosen, deselect the cell
+                  if (pickedAPiece && cellIdx === selectedCell) {
+                    deselectPiece(cellIdx);
+                    return;
+                  }
+
+                  // If a piece is picked up, move the piece
+                  if (pickedAPiece) {
+                    movePiece(selectedCell, cellIdx);
                   }
                 }}
               />
@@ -50,5 +87,9 @@ function Board() {
     </div>
   );
 }
+
+Board.propTypes = {
+  onPieceRemoved: PropTypes.func.isRequired,
+};
 
 export default Board;
