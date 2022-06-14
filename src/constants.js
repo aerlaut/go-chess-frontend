@@ -1,37 +1,23 @@
+const COLORS = {
+  WHITE: 'white',
+  BLACK: 'black',
+};
+
 // Unicode characters for each piece
 // https://en.wikipedia.org/wiki/Chess_symbols_in_Unicode
 const PIECE = {
-  WHITE_KING: '\u2654',
-  WHITE_QUEEN: '\u2655',
-  WHITE_ROOK: '\u2656',
-  WHITE_BISHOP: '\u2657',
-  WHITE_KNIGHT: '\u2658',
-  WHITE_PAWN: '\u2659',
-  BLACK_KING: '\u265A',
-  BLACK_QUEEN: '\u265B',
-  BLACK_ROOK: '\u265C',
-  BLACK_BISHOP: '\u265D',
-  BLACK_KNIGHT: '\u265E',
-  BLACK_PAWN: '\u265F',
-};
-
-const PIECE_COLORS = {
-  BLACK: [
-    PIECE.BLACK_KING,
-    PIECE.BLACK_QUEEN,
-    PIECE.BLACK_ROOK,
-    PIECE.BLACK_BISHOP,
-    PIECE.BLACK_KNIGHT,
-    PIECE.BLACK_PAWN,
-  ],
-  WHITE: [
-    PIECE.WHITE_KING,
-    PIECE.WHITE_QUEEN,
-    PIECE.WHITE_ROOK,
-    PIECE.WHITE_BISHOP,
-    PIECE.WHITE_KNIGHT,
-    PIECE.WHITE_PAWN,
-  ],
+  WHITE_KING: { color: COLORS.WHITE, icon: '\u2654' },
+  WHITE_QUEEN: { color: COLORS.WHITE, icon: '\u2655' },
+  WHITE_ROOK: { color: COLORS.WHITE, icon: '\u2656' },
+  WHITE_BISHOP: { color: COLORS.WHITE, icon: '\u2657' },
+  WHITE_KNIGHT: { color: COLORS.WHITE, icon: '\u2658' },
+  WHITE_PAWN: { color: COLORS.WHITE, icon: '\u2659' },
+  BLACK_KING: { color: COLORS.BLACK, icon: '\u265A' },
+  BLACK_QUEEN: { color: COLORS.BLACK, icon: '\u265B' },
+  BLACK_ROOK: { color: COLORS.BLACK, icon: '\u265C' },
+  BLACK_BISHOP: { color: COLORS.BLACK, icon: '\u265D' },
+  BLACK_KNIGHT: { color: COLORS.BLACK, icon: '\u265E' },
+  BLACK_PAWN: { color: COLORS.BLACK, icon: '\u265F' },
 };
 
 const STARTING_POSITIONS = {
@@ -72,5 +58,5 @@ const STARTING_POSITIONS = {
 export {
   STARTING_POSITIONS,
   PIECE,
-  PIECE_COLORS,
+  COLORS,
 };

@@ -41,7 +41,10 @@ function Board(props) {
   }
 
   function movePiece(fromCellIdx, toCellIdx) {
-    // If there is a piece at the destination cell, remove it
+    // If moving to a place occupied with a piece of the same color, do not do anything
+    if (cells[fromCellIdx].color === cells[toCellIdx].color) return;
+
+    // If there is a piece of different color at the destination cell, remove it
     if (cells[toCellIdx]) { onPieceRemoved(cells[toCellIdx]); }
 
     // Move the piece to the destination cell
@@ -64,7 +67,7 @@ function Board(props) {
               <Cell
                 key={cellIdx}
                 color={cellIdx === selectedCell ? 'red' : cellColor}
-                piece={cells[cellIdx]}
+                piece={cells[cellIdx]?.icon}
                 onClick={() => {
                   // If the selected cell contains a piece, select it
                   if (!pickedAPiece && cells[cellIdx]) {
@@ -79,9 +82,7 @@ function Board(props) {
                   }
 
                   // If a piece is picked up, move the piece
-                  if (pickedAPiece) {
-                    movePiece(selectedCell, cellIdx);
-                  }
+                  if (pickedAPiece) { movePiece(selectedCell, cellIdx); }
                 }}
               />
             );
