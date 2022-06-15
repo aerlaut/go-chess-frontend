@@ -25,158 +25,224 @@ const trimEdges = (
   possibleMoves,
 ) => possibleMoves.filter((moveIdx) => moveIdx >= 0 && moveIdx <= MAX_MOVES);
 
-const whitePawnMovement = (startingPosition) => {
-  const moves = [];
-
-  // Move 2 steps
-  if (startingPosition > MAX_MOVES - 2 * NUM_COLS) {
-    moves.push(move(startingPosition).up().up().position);
+function detectCollision(dest, destPiece, piece, moves, capture = true) {
+  if (destPiece) {
+    if (destPiece.color !== piece.color && capture) moves.push(dest);
+    return true;
   }
 
-  // Move step
-  moves.push(move(startingPosition).up().position);
+  moves.push(dest);
+  return false;
+}
 
-  return trimEdges(moves);
-};
-
-const blackPawnMovement = (startingPosition) => {
+const whitePawnMovement = (startingPosition, cells) => {
   const moves = [];
+  const piece = cells[startingPosition];
+  let dest;
+
+  // Move 1 step
+  dest = move(startingPosition).up().position;
+  const collide = detectCollision(dest, cells[dest], piece, moves, false);
 
   // Move 2 steps
-  if (startingPosition < 2 * NUM_COLS) {
-    moves.push(move(startingPosition).down().down().position);
+  if (startingPosition > MAX_MOVES - 2 * NUM_COLS && !collide) {
+    dest = move(startingPosition).up().up().position;
+    detectCollision(dest, cells[dest], piece, moves, false);
   }
 
-  // Move step
-  moves.push(move(startingPosition).down().position);
+  // Check for diagonal captures
+  const captureLeftIdx = startingPosition - NUM_ROWS - 1;
+  const captureRightIdx = startingPosition - NUM_ROWS + 1;
+
+  if (cells[captureLeftIdx]) moves.push(captureLeftIdx);
+  if (cells[captureRightIdx]) moves.push(captureRightIdx);
 
   return trimEdges(moves);
 };
 
-const kingMovement = (startingPosition) => {
+const blackPawnMovement = (startingPosition, cells) => {
   const moves = [];
+  const piece = cells[startingPosition];
+  let dest;
 
-  moves.push(move(startingPosition).up().position);
-  moves.push(move(startingPosition).down().position);
-  moves.push(move(startingPosition).left().position);
-  moves.push(move(startingPosition).right().position);
-  moves.push(move(startingPosition).left().up().position);
-  moves.push(move(startingPosition).left().down().position);
-  moves.push(move(startingPosition).right().up().position);
-  moves.push(move(startingPosition).right().down().position);
+  // Move 1 step
+  dest = move(startingPosition).down().position;
+  const collide = detectCollision(dest, cells[dest], piece, moves, false);
+
+  // Move 2 steps
+  if (startingPosition < 2 * NUM_COLS && !collide) {
+    dest = move(startingPosition).down().down().position;
+    detectCollision(dest, cells[dest], piece, moves, false);
+  }
+
+  // Check for diagonal captures
+  const captureLeftIdx = startingPosition + NUM_ROWS - 1;
+  const captureRightIdx = startingPosition + NUM_ROWS + 1;
+
+  if (cells[captureLeftIdx]) moves.push(captureLeftIdx);
+  if (cells[captureRightIdx]) moves.push(captureRightIdx);
 
   return trimEdges(moves);
 };
 
-const rookMovement = (startingPosition) => {
+const kingMovement = (startingPosition, cells) => {
   const moves = [];
+  const piece = cells[startingPosition];
+
+  let dest;
+
+  dest = move(startingPosition).up().position;
+  detectCollision(dest, cells[dest], piece, moves);
+  dest = move(startingPosition).down().position;
+  detectCollision(dest, cells[dest], piece, moves);
+  dest = move(startingPosition).left().position;
+  detectCollision(dest, cells[dest], piece, moves);
+  dest = move(startingPosition).right().position;
+  detectCollision(dest, cells[dest], piece, moves);
+  dest = move(startingPosition).left().up().position;
+  detectCollision(dest, cells[dest], piece, moves);
+  dest = move(startingPosition).left().down().position;
+  detectCollision(dest, cells[dest], piece, moves);
+  dest = move(startingPosition).right().up().position;
+  detectCollision(dest, cells[dest], piece, moves);
+  dest = move(startingPosition).right().down().position;
+  detectCollision(dest, cells[dest], piece, moves);
+
+  return trimEdges(moves);
+};
+
+const rookMovement = (startingPosition, cells) => {
+  const moves = [];
+  const piece = cells[startingPosition];
 
   // Move up
   for (let i = 0; i < availableTop(startingPosition); i += 1) {
-    moves.push(move(startingPosition).up().repeat(i).position);
+    const dest = move(startingPosition).up().repeat(i).position;
+    if (detectCollision(dest, cells[dest], piece, moves)) break;
   }
 
   // Move down
   for (let i = 0; i < availableDown(startingPosition); i += 1) {
-    moves.push(move(startingPosition).down().repeat(i).position);
+    const dest = move(startingPosition).down().repeat(i).position;
+    if (detectCollision(dest, cells[dest], piece, moves)) break;
   }
 
   // Move left
   for (let i = 0; i < availableLeft(startingPosition); i += 1) {
-    moves.push(move(startingPosition).left().repeat(i).position);
+    const dest = move(startingPosition).left().repeat(i).position;
+    if (detectCollision(dest, cells[dest], piece, moves)) break;
   }
 
   // Move right
   for (let i = 0; i < availableRight(startingPosition); i += 1) {
-    moves.push(move(startingPosition).right().repeat(i).position);
+    const dest = move(startingPosition).right().repeat(i).position;
+    if (detectCollision(dest, cells[dest], piece, moves)) break;
   }
 
   return moves;
 };
 
-const bishopMovement = (startingPosition) => {
+const bishopMovement = (startingPosition, cells) => {
   const moves = [];
+  const piece = cells[startingPosition];
 
   // Move up-left
   for (let i = 0;
     i < Math.min(availableTop(startingPosition), availableLeft(startingPosition));
     i += 1) {
-    moves.push(move(startingPosition).up().repeat(i).left()
-      .repeat(i).position);
+    const dest = move(startingPosition).up().repeat(i).left()
+      .repeat(i).position;
+
+    if (detectCollision(dest, cells[dest], piece, moves)) break;
   }
 
   // Move up-right
   for (let i = 0;
     i < Math.min(availableTop(startingPosition), availableRight(startingPosition));
     i += 1) {
-    moves.push(move(startingPosition).up().repeat(i).right()
-      .repeat(i).position);
+    const dest = move(startingPosition).up().repeat(i).right()
+      .repeat(i).position;
+
+    if (detectCollision(dest, cells[dest], piece, moves)) break;
   }
 
   // Move down-left
   for (let i = 0;
     i < Math.min(availableDown(startingPosition), availableLeft(startingPosition));
     i += 1) {
-    moves.push(move(startingPosition).down().repeat(i).left()
-      .repeat(i).position);
+    const dest = move(startingPosition).down().repeat(i).left()
+      .repeat(i).position;
+
+    if (detectCollision(dest, cells[dest], piece, moves)) break;
   }
 
   // Move down-right
   for (let i = 0;
     i < Math.min(availableDown(startingPosition), availableRight(startingPosition));
     i += 1) {
-    moves.push(move(startingPosition).down().repeat(i).right()
-      .repeat(i).position);
+    const dest = move(startingPosition).down().repeat(i).right()
+      .repeat(i).position;
+
+    if (detectCollision(dest, cells[dest], piece, moves)) break;
   }
 
   return moves;
 };
 
-const knightMovement = (startingPosition) => {
+const knightMovement = (startingPosition, cells) => {
   const moves = [];
+  const piece = cells[startingPosition];
 
   // Move up-left
   if (availableLeft(startingPosition) > 1 && availableTop(startingPosition)) {
-    moves.push(move(startingPosition).up().left().left().position);
+    const dest = move(startingPosition).up().left().left().position;
+    detectCollision(dest, cells[dest], piece, moves);
   }
 
   if (availableLeft(startingPosition) && availableTop(startingPosition) > 1) {
-    moves.push(move(startingPosition).left().up().up().position);
+    const dest = move(startingPosition).left().up().up().position;
+    detectCollision(dest, cells[dest], piece, moves);
   }
 
   // Move up-right
   if (availableRight(startingPosition) > 1 && availableTop(startingPosition)) {
-    moves.push(move(startingPosition).up().right().right().position);
+    const dest = move(startingPosition).up().right().right().position;
+    detectCollision(dest, cells[dest], piece, moves);
   }
 
   if (availableRight(startingPosition) && availableTop(startingPosition) > 1) {
-    moves.push(move(startingPosition).right().up().up().position);
+    const dest = move(startingPosition).right().up().up().position;
+    detectCollision(dest, cells[dest], piece, moves);
   }
 
   // Move down-left
   if (availableLeft(startingPosition) > 1 && availableDown(startingPosition)) {
-    moves.push(move(startingPosition).down().left().left().position);
+    const dest = move(startingPosition).down().left().left().position;
+    detectCollision(dest, cells[dest], piece, moves);
   }
 
   if (availableLeft(startingPosition) && availableDown(startingPosition) > 1) {
-    moves.push(move(startingPosition).left().down().down().position);
+    const dest = move(startingPosition).left().down().down().position;
+    detectCollision(dest, cells[dest], piece, moves);
   }
 
   // Move down-right
   if (availableRight(startingPosition) > 1 && availableDown(startingPosition)) {
-    moves.push(move(startingPosition).down().right().right().position);
+    const dest = move(startingPosition).down().right().right().position;
+    detectCollision(dest, cells[dest], piece, moves);
   }
 
   if (availableRight(startingPosition) && availableDown(startingPosition) > 1) {
-    moves.push(move(startingPosition).right().down().down().position);
+    const dest = move(startingPosition).right().down().down().position;
+    detectCollision(dest, cells[dest], piece, moves);
   }
 
   return trimEdges(moves);
 };
 
-const queenMovement = (startingPosition) => {
-  const rookMoves = rookMovement(startingPosition);
-  const bishopMoves = bishopMovement(startingPosition);
+const queenMovement = (startingPosition, cells) => {
+  const rookMoves = rookMovement(startingPosition, cells);
+  const bishopMoves = bishopMovement(startingPosition, cells);
 
   return [...rookMoves, ...bishopMoves];
 };

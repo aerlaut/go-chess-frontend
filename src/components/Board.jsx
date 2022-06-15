@@ -88,7 +88,10 @@ function Board(props) {
                   if (!pickedAPiece && selectedPiece) {
                     selectPiece(cellIdx);
 
-                    const possibleMoves = ALLOWED_MOVES[selectedPiece.movement_type](cellIdx);
+                    const possibleMoves = ALLOWED_MOVES[
+                      selectedPiece.movement_type
+                    ](cellIdx, cells);
+
                     setAllowedMoves(possibleMoves);
                     return;
                   }
