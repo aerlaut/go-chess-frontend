@@ -10,23 +10,30 @@ function PlayArea(props) {
   const { gameNo } = props;
 
   const [removed, setRemoved] = useState([]);
+  const [colorTurn, setColorTurn] = useState(COLORS.WHITE);
 
   useEffect(() => {
     setRemoved([]);
+    setColorTurn(COLORS.WHITE);
   }, [gameNo]);
 
   return (
-    <div id="play-area">
-      <RemovedPieces
-        pieces={removed.filter((piece) => piece.color === COLORS.BLACK)}
-      />
-      <Board
-        gameNo={gameNo}
-        onPieceRemoved={(piece) => setRemoved([...removed, piece])}
-      />
-      <RemovedPieces
-        pieces={removed.filter((piece) => piece.color === COLORS.WHITE)}
-      />
+    <div>
+      <h2 style={{ textAlign: 'center' }}>{`${colorTurn}'s turn`}</h2>
+      <div id="play-area">
+        <RemovedPieces
+          pieces={removed.filter((piece) => piece.color === COLORS.BLACK)}
+        />
+        <Board
+          gameNo={gameNo}
+          turn={colorTurn}
+          onPieceRemoved={(piece) => setRemoved([...removed, piece])}
+          onEndTurn={() => setColorTurn(colorTurn === COLORS.WHITE ? COLORS.BLACK : COLORS.WHITE)}
+        />
+        <RemovedPieces
+          pieces={removed.filter((piece) => piece.color === COLORS.WHITE)}
+        />
+      </div>
     </div>
 
   );

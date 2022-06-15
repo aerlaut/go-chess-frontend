@@ -12,7 +12,11 @@
 h1 {
   font-size: 2em;
   padding: 1em;
-  display: inline-block;
+}
+
+h2 {
+  font-size: 1.75em;
+  padding: 1em;
 }
 
 button#new-game {

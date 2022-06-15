@@ -22,7 +22,9 @@ function resetBoard() {
 function getCellColor(index) { return index % 2 === 0 ? 'white' : '#ccc'; }
 
 function Board(props) {
-  const { gameNo, onPieceRemoved } = props;
+  const {
+    gameNo, turn, onPieceRemoved, onEndTurn,
+  } = props;
 
   const [cells, setCells] = useState(resetBoard());
   const [pickedAPiece, setPickedAPiece] = useState(false);
@@ -96,7 +98,7 @@ function Board(props) {
                   const selectedPiece = cells[cellIdx];
 
                   // If the selected cell contains a piece, select it
-                  if (!pickedAPiece && selectedPiece) {
+                  if (!pickedAPiece && selectedPiece && selectedPiece.color === turn) {
                     selectPiece(cellIdx);
 
                     const possibleMoves = ALLOWED_MOVES[
@@ -117,6 +119,7 @@ function Board(props) {
                   if (pickedAPiece) {
                     if (!allowedMoves.includes(cellIdx)) return;
                     movePiece(selectedCell, cellIdx);
+                    onEndTurn();
                   }
                 }}
               />
@@ -130,7 +133,9 @@ function Board(props) {
 
 Board.propTypes = {
   gameNo: PropTypes.number.isRequired,
+  turn: PropTypes.string.isRequired,
   onPieceRemoved: PropTypes.func.isRequired,
+  onEndTurn: PropTypes.func.isRequired,
 };
 
 export default Board;

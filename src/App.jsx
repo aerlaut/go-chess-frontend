@@ -8,7 +8,7 @@ function App() {
   return (
     <div id="app">
       <div>
-        <h1>Go Chess</h1>
+        <h1 style={{ display: 'inline-block' }}>Go Chess</h1>
         <button
           id="new-game"
           type="button"
