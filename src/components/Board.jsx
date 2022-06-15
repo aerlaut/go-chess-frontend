@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { ALLOWED_MOVES, STARTING_POSITIONS } from '../utils/constants';
+import {
+  ALLOWED_MOVES, STARTING_POSITIONS, MOVEMENT_TYPES, PIECE,
+} from '../utils/constants';
 
 import Cell from './Cell';
 
@@ -51,6 +53,15 @@ function Board(props) {
 
     // If there is a piece of different color at the destination cell, remove it
     if (cells[toCellIdx]) { onPieceRemoved(cells[toCellIdx]); }
+
+    // If the piece moved is pawn, check if it can be turned to queen
+    if (cells[fromCellIdx].movement_type === MOVEMENT_TYPES.BLACK_PAWN && toCellIdx >= 56) {
+      cells[fromCellIdx] = PIECE.BLACK_QUEEN;
+    }
+
+    if (cells[fromCellIdx].movement_type === MOVEMENT_TYPES.WHITE_PAWN && toCellIdx < 8) {
+      cells[fromCellIdx] = PIECE.WHITE_QUEEN;
+    }
 
     // Move the piece to the destination cell
     cells[toCellIdx] = cells[fromCellIdx];
