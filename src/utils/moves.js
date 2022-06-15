@@ -13,6 +13,18 @@ const move = (initialPosition) => ({
   repeat(num) { for (let i = 0; i < num; i += 1) { this[this.lastMove](); } return this; },
 });
 
+const getRow = (startingPosition) => Math.floor(startingPosition / NUM_COLS);
+const getCol = (startingPosition) => startingPosition % NUM_COLS;
+
+const availableRight = (startingPosition) => (NUM_COLS - 1) - getCol(startingPosition);
+const availableLeft = (startingPosition) => getCol(startingPosition);
+const availableTop = (startingPosition) => getRow(startingPosition);
+const availableDown = (startingPosition) => (NUM_ROWS - 1) - getRow(startingPosition);
+
+const trimEdges = (
+  possibleMoves,
+) => possibleMoves.filter((moveIdx) => moveIdx >= 0 && moveIdx <= MAX_MOVES);
+
 const whitePawnMovement = (startingPosition) => {
   const moves = [];
 
@@ -24,7 +36,7 @@ const whitePawnMovement = (startingPosition) => {
   // Move step
   moves.push(move(startingPosition).up().position);
 
-  return moves;
+  return trimEdges(moves);
 };
 
 const blackPawnMovement = (startingPosition) => {
@@ -38,7 +50,7 @@ const blackPawnMovement = (startingPosition) => {
   // Move step
   moves.push(move(startingPosition).down().position);
 
-  return moves;
+  return trimEdges(moves);
 };
 
 const kingMovement = (startingPosition) => {
@@ -53,29 +65,29 @@ const kingMovement = (startingPosition) => {
   moves.push(move(startingPosition).right().up().position);
   moves.push(move(startingPosition).right().down().position);
 
-  return moves;
+  return trimEdges(moves);
 };
 
 const rookMovement = (startingPosition) => {
   const moves = [];
 
   // Move up
-  for (let i = 0; i < NUM_COLS; i += 1) {
+  for (let i = 0; i < availableTop(startingPosition); i += 1) {
     moves.push(move(startingPosition).up().repeat(i).position);
   }
 
   // Move down
-  for (let i = 0; i < NUM_COLS; i += 1) {
+  for (let i = 0; i < availableDown(startingPosition); i += 1) {
     moves.push(move(startingPosition).down().repeat(i).position);
   }
 
   // Move left
-  for (let i = 0; i < NUM_COLS; i += 1) {
+  for (let i = 0; i < availableLeft(startingPosition); i += 1) {
     moves.push(move(startingPosition).left().repeat(i).position);
   }
 
   // Move right
-  for (let i = 0; i < NUM_COLS; i += 1) {
+  for (let i = 0; i < availableRight(startingPosition); i += 1) {
     moves.push(move(startingPosition).right().repeat(i).position);
   }
 
@@ -86,25 +98,33 @@ const bishopMovement = (startingPosition) => {
   const moves = [];
 
   // Move up-left
-  for (let i = 0; i < NUM_ROWS; i += 1) {
+  for (let i = 0;
+    i < Math.min(availableTop(startingPosition), availableLeft(startingPosition));
+    i += 1) {
     moves.push(move(startingPosition).up().repeat(i).left()
       .repeat(i).position);
   }
 
   // Move up-right
-  for (let i = 0; i < NUM_ROWS; i += 1) {
+  for (let i = 0;
+    i < Math.min(availableTop(startingPosition), availableRight(startingPosition));
+    i += 1) {
     moves.push(move(startingPosition).up().repeat(i).right()
       .repeat(i).position);
   }
 
   // Move down-left
-  for (let i = 0; i < NUM_ROWS; i += 1) {
+  for (let i = 0;
+    i < Math.min(availableDown(startingPosition), availableLeft(startingPosition));
+    i += 1) {
     moves.push(move(startingPosition).down().repeat(i).left()
       .repeat(i).position);
   }
 
   // Move down-right
-  for (let i = 0; i < NUM_ROWS; i += 1) {
+  for (let i = 0;
+    i < Math.min(availableDown(startingPosition), availableRight(startingPosition));
+    i += 1) {
     moves.push(move(startingPosition).down().repeat(i).right()
       .repeat(i).position);
   }
@@ -116,22 +136,42 @@ const knightMovement = (startingPosition) => {
   const moves = [];
 
   // Move up-left
-  moves.push(move(startingPosition).up().left().left().position);
-  moves.push(move(startingPosition).left().up().up().position);
+  if (availableLeft(startingPosition) > 1 && availableTop(startingPosition)) {
+    moves.push(move(startingPosition).up().left().left().position);
+  }
+
+  if (availableLeft(startingPosition) && availableTop(startingPosition) > 1) {
+    moves.push(move(startingPosition).left().up().up().position);
+  }
 
   // Move up-right
-  moves.push(move(startingPosition).up().right().right().position);
-  moves.push(move(startingPosition).right().up().up().position);
+  if (availableRight(startingPosition) > 1 && availableTop(startingPosition)) {
+    moves.push(move(startingPosition).up().right().right().position);
+  }
+
+  if (availableRight(startingPosition) && availableTop(startingPosition) > 1) {
+    moves.push(move(startingPosition).right().up().up().position);
+  }
 
   // Move down-left
-  moves.push(move(startingPosition).down().left().left().position);
-  moves.push(move(startingPosition).left().down().down().position);
+  if (availableLeft(startingPosition) > 1 && availableDown(startingPosition)) {
+    moves.push(move(startingPosition).down().left().left().position);
+  }
+
+  if (availableLeft(startingPosition) && availableDown(startingPosition) > 1) {
+    moves.push(move(startingPosition).left().down().down().position);
+  }
 
   // Move down-right
-  moves.push(move(startingPosition).down().right().right().position);
-  moves.push(move(startingPosition).right().down().down().position);
+  if (availableRight(startingPosition) > 1 && availableDown(startingPosition)) {
+    moves.push(move(startingPosition).down().right().right().position);
+  }
 
-  return moves;
+  if (availableRight(startingPosition) && availableDown(startingPosition) > 1) {
+    moves.push(move(startingPosition).right().down().down().position);
+  }
+
+  return trimEdges(moves);
 };
 
 const queenMovement = (startingPosition) => {
