@@ -29,6 +29,9 @@ function Board(props) {
 
   useEffect(() => {
     setCells(resetBoard());
+    setPickedAPiece(false);
+    setSelectedCell(null);
+    setAllowedMoves([]);
   }, [gameNo]);
 
   function selectPiece(index) {
@@ -84,8 +87,6 @@ function Board(props) {
                   // If the selected cell contains a piece, select it
                   if (!pickedAPiece && selectedPiece) {
                     selectPiece(cellIdx);
-
-                    console.log('*** type', ALLOWED_MOVES[selectedPiece.movement_type]());
 
                     const possibleMoves = ALLOWED_MOVES[selectedPiece.movement_type](cellIdx);
                     setAllowedMoves(possibleMoves);
