@@ -54,8 +54,13 @@ const whitePawnMovement = (startingPosition, cells) => {
   const captureLeftIdx = startingPosition - NUM_ROWS - 1;
   const captureRightIdx = startingPosition - NUM_ROWS + 1;
 
-  if (cells[captureLeftIdx]) moves.push(captureLeftIdx);
-  if (cells[captureRightIdx]) moves.push(captureRightIdx);
+  if (cells[captureLeftIdx]
+    && cells[captureLeftIdx]?.color !== piece.color
+  ) { moves.push(captureLeftIdx); }
+
+  if (cells[captureRightIdx]
+    && cells[captureRightIdx]?.color !== piece.color
+  ) { moves.push(captureRightIdx); }
 
   return trimEdges(moves);
 };
@@ -79,8 +84,14 @@ const blackPawnMovement = (startingPosition, cells) => {
   const captureLeftIdx = startingPosition + NUM_ROWS - 1;
   const captureRightIdx = startingPosition + NUM_ROWS + 1;
 
-  if (cells[captureLeftIdx]) moves.push(captureLeftIdx);
-  if (cells[captureRightIdx]) moves.push(captureRightIdx);
+  if (cells[captureLeftIdx]
+    && cells[captureLeftIdx]?.color !== piece.color
+  ) { moves.push(captureLeftIdx); }
+
+  if (
+    cells[captureRightIdx]
+    && cells[captureRightIdx]?.color !== piece.color
+  ) { moves.push(captureRightIdx); }
 
   return trimEdges(moves);
 };
