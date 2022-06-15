@@ -23,7 +23,7 @@ function getCellColor(index) { return index % 2 === 0 ? 'white' : '#ccc'; }
 
 function Board(props) {
   const {
-    gameNo, turn, onPieceRemoved, onEndTurn,
+    gameNo, turn, onPieceRemoved, onEndTurn, onWin,
   } = props;
 
   const [cells, setCells] = useState(resetBoard());
@@ -64,6 +64,9 @@ function Board(props) {
     if (cells[fromCellIdx].movement_type === MOVEMENT_TYPES.WHITE_PAWN && toCellIdx < 8) {
       cells[fromCellIdx] = PIECE.WHITE_QUEEN;
     }
+
+    // Check if the piece is the king - which is a winning condition
+    if (cells[toCellIdx]?.movement_type === MOVEMENT_TYPES.KING) onWin();
 
     // Move the piece to the destination cell
     cells[toCellIdx] = cells[fromCellIdx];
@@ -136,6 +139,7 @@ Board.propTypes = {
   turn: PropTypes.string.isRequired,
   onPieceRemoved: PropTypes.func.isRequired,
   onEndTurn: PropTypes.func.isRequired,
+  onWin: PropTypes.func.isRequired,
 };
 
 export default Board;

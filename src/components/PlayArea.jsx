@@ -11,15 +11,17 @@ function PlayArea(props) {
 
   const [removed, setRemoved] = useState([]);
   const [colorTurn, setColorTurn] = useState(COLORS.WHITE);
+  const [winner, setWinner] = useState(null);
 
   useEffect(() => {
     setRemoved([]);
     setColorTurn(COLORS.WHITE);
+    setWinner(null);
   }, [gameNo]);
 
   return (
     <div>
-      <h2 style={{ textAlign: 'center' }}>{`${colorTurn}'s turn`}</h2>
+      <h2 style={{ textAlign: 'center' }}>{winner ? `${winner} wins!` : `${colorTurn}'s turn`}</h2>
       <div id="play-area">
         <RemovedPieces
           pieces={removed.filter((piece) => piece.color === COLORS.BLACK)}
@@ -29,6 +31,7 @@ function PlayArea(props) {
           turn={colorTurn}
           onPieceRemoved={(piece) => setRemoved([...removed, piece])}
           onEndTurn={() => setColorTurn(colorTurn === COLORS.WHITE ? COLORS.BLACK : COLORS.WHITE)}
+          onWin={() => { setWinner(colorTurn); setColorTurn(null); }}
         />
         <RemovedPieces
           pieces={removed.filter((piece) => piece.color === COLORS.WHITE)}
