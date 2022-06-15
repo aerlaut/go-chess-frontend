@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Board from './Board';
 import RemovedPieces from './RemovedPieces';
 
-import { COLORS } from '../constants';
+import { COLORS } from '../utils/constants';
 
 function PlayArea(props) {
   const { gameNo } = props;
