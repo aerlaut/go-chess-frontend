@@ -11,10 +11,10 @@ function Cell(props) {
         backgroundColor: color,
       }}
       onClick={() => {
-        onClick();
+        onClick(piece);
       }}
     >
-      {piece}
+      {piece?.icon}
     </div>
   );
 }

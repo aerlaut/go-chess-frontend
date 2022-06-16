@@ -96,16 +96,14 @@ function Board(props) {
               <Cell
                 key={cellIdx}
                 color={paintCell(cellIdx, cellColor)}
-                piece={cells[cellIdx]?.icon}
-                onClick={() => {
-                  const selectedPiece = cells[cellIdx];
-
+                piece={cells[cellIdx] || {}}
+                onClick={(piece) => {
                   // If the selected cell contains a piece, select it
-                  if (!pickedAPiece && selectedPiece && selectedPiece.color === turn) {
+                  if (!pickedAPiece && piece && piece.color === turn) {
                     selectPiece(cellIdx);
 
                     const possibleMoves = ALLOWED_MOVES[
-                      selectedPiece.movement_type
+                      piece.movement_type
                     ](cellIdx, cells);
 
                     setAllowedMoves(possibleMoves);
