@@ -43,7 +43,7 @@ function PlayArea(props) {
 }
 
 PlayArea.propTypes = {
-  gameNo: PropTypes.number.isRequired,
+  gameNo: PropTypes.string.isRequired,
 };
 
 export default PlayArea;

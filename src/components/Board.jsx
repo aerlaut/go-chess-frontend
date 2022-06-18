@@ -133,7 +133,7 @@ function Board(props) {
 }
 
 Board.propTypes = {
-  gameNo: PropTypes.number.isRequired,
+  gameNo: PropTypes.string.isRequired,
   turn: PropTypes.string.isRequired,
   onPieceRemoved: PropTypes.func.isRequired,
   onEndTurn: PropTypes.func.isRequired,

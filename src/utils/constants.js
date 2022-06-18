@@ -2,8 +2,8 @@ import moves from './moves';
 
 /* eslint-disable max-len */
 const COLORS = {
-  WHITE: 'white',
-  BLACK: 'black',
+  WHITE: 'White',
+  BLACK: 'Black',
 };
 
 const MOVEMENT_TYPES = {

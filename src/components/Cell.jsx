@@ -21,7 +21,11 @@ function Cell(props) {
 
 Cell.propTypes = {
   color: PropTypes.string.isRequired,
-  piece: PropTypes.string,
+  piece: PropTypes.shape({
+    color: PropTypes.string,
+    movement_type: PropTypes.string,
+    icon: PropTypes.string,
+  }),
   onClick: PropTypes.func,
 };
 
