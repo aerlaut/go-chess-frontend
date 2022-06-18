@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import PlayArea from './components/PlayArea';
+import connectWS from './utils/ws';
 
 const getGameId = async () => {
   const res = await fetch('http://localhost:5000/api/match');
@@ -23,6 +24,8 @@ const connectToMatch = async () => {
   }
 
   // If URL is a match link, connect to match
+  connectWS(matchId);
+
   return matchId;
 };
 
