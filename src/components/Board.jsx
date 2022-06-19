@@ -5,7 +5,7 @@ import {
 } from '../utils/constants';
 
 import Cell from './Cell';
-import sendMoves from '../utils/multiplayer';
+import { sendWS } from '../utils/ws';
 
 const NUM_ROWS = 8;
 const NUM_COLS = 8;
@@ -73,12 +73,12 @@ function Board(props) {
     cells[toCellIdx] = cells[fromCellIdx];
     cells[fromCellIdx] = null;
 
-    const moveInfo = {
+    const action = {
       from: fromCellIdx,
       to: toCellIdx,
     };
 
-    sendMoves(JSON.stringify(moveInfo));
+    sendWS('move', JSON.stringify(action));
     deselectPiece();
   }
 

@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
+import { v1 as uuidv1 } from 'uuid';
 import PlayArea from './components/PlayArea';
-import connectWS from './utils/ws';
+import initConnection, { disconnectWS } from './utils/ws';
+
+const getPlayerId = () => {
+  const idString = uuidv1();
+  return idString.split('-')[4];
+};
 
 const getGameId = async () => {
   const res = await fetch('http://localhost:5000/api/game');
@@ -24,7 +30,8 @@ const connectToGame = async () => {
   }
 
   // If URL is a game link, connect to game
-  connectWS(gameId);
+  const playerId = getPlayerId();
+  initConnection(gameId, playerId);
 
   return gameId;
 };
@@ -32,6 +39,10 @@ const connectToGame = async () => {
 function App() {
   const [currentGameId, setCurrentGameId] = useState('default');
   const [gameLink, setGameLink] = useState(null);
+
+  useEffect(() => {
+    window.addEventListener('beforeunload', () => disconnectWS());
+  }, []);
 
   useEffect(() => {
     connectToGame().then((gameId) => {
