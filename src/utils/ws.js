@@ -1,16 +1,17 @@
-const connectWS = (matchId) => {
-  const matchURL = `localhost:5000/api/match/${matchId}`;
+let socket;
 
-  console.log('Connecting to match: ', matchURL);
+const connectWS = (gameId) => {
+  const gameURL = `localhost:5000/api/game/${gameId}`;
 
-  const socket = new WebSocket(`ws://${matchURL}`);
+  console.log('Connecting to game: ', gameURL);
+  socket = new WebSocket(`ws://${gameURL}`);
 
   socket.addEventListener('open', () => {
     socket.send('Hello server!');
   });
 
-  socket.addEventListener('message', (res) => {
-    const data = res.json();
+  socket.addEventListener('message', (e) => {
+    const data = JSON.parse(e.data);
     console.log('Message from server: ', data);
   });
 
@@ -19,4 +20,9 @@ const connectWS = (matchId) => {
   });
 };
 
+const sendWS = (message) => {
+  socket.send(message);
+};
+
 export default connectWS;
+export { sendWS };

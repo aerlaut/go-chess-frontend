@@ -4,41 +4,41 @@ import PlayArea from './components/PlayArea';
 import connectWS from './utils/ws';
 
 const getGameId = async () => {
-  const res = await fetch('http://localhost:5000/api/match');
-  const match = await res.json();
-  return match.id;
+  const res = await fetch('http://localhost:5000/api/game');
+  const game = await res.json();
+  return game.id;
 };
 
-// Connect to match if not connected.
-// A match is a URL with a match id.
-const connectToMatch = async () => {
+// Connect to game if not connected.
+// A game is a URL with a game id.
+const connectToGame = async () => {
   const currentPath = window.location.pathname;
-  const matchId = currentPath.split('/')[2];
+  const gameId = currentPath.split('/')[2];
 
-  // If URL is still base, go to match link
-  if (!matchId) {
-    const newMatchId = await getGameId();
+  // If URL is still base, go to game link
+  if (!gameId) {
+    const newGameId = await getGameId();
 
-    const gameUrl = `${currentPath}match/${newMatchId}`;
+    const gameUrl = `${currentPath}game/${newGameId}`;
     window.location.pathname = gameUrl;
   }
 
-  // If URL is a match link, connect to match
-  connectWS(matchId);
+  // If URL is a game link, connect to game
+  connectWS(gameId);
 
-  return matchId;
+  return gameId;
 };
 
 function App() {
-  const [gameId, setGameId] = useState('default');
+  const [currentGameId, setCurrentGameId] = useState('default');
   const [gameLink, setGameLink] = useState(null);
 
   useEffect(() => {
-    connectToMatch().then((matchId) => {
-      setGameLink(`${window.location.protocol}//${window.location.host}/match/${matchId}`);
-      setGameId(matchId);
+    connectToGame().then((gameId) => {
+      setGameLink(`${window.location.protocol}//${window.location.host}/game/${gameId}`);
+      setCurrentGameId(gameId);
     });
-  }, [gameId]);
+  }, [currentGameId]);
 
   return (
     <div id="app">
@@ -49,7 +49,7 @@ function App() {
           type="button"
           onClick={async () => {
             const newGameId = await getGameId();
-            window.location.pathname = `/match/${newGameId}`;
+            window.location.pathname = `/game/${newGameId}`;
           }}
         >
           New Game
@@ -79,7 +79,7 @@ function App() {
           </span>
         )}
       </div>
-      <PlayArea gameNo={gameId} />
+      <PlayArea gameNo={currentGameId} />
     </div>
   );
 }
